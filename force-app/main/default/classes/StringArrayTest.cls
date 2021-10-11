@@ -1,19 +1,10 @@
-public with sharing class StringArrayTest {
-    private List<String> testList;
-    public StringArrayTest() {
-       testList = new List<String>();
+public class StringArrayTest
+{
+    public static List<String> generateStringArray(Integer n)
+    {
+        List<String> List1 = new List<String>();
+        for(Integer i =0; i < n; i++)
+            List1.add('Test ' + i);
+        return List1;
     }
-    public StringArrayTest(Integer size) {
-        Integer i=0;
-        TestList = new List<String>();
-        do{
-           TestList.add('Test '+str(i));
-           i++;
-        } while (i<size);
-    }
-    public static List<String> generateStringArray(integer size){
-        StringArrayTest(size);
-    return  TestList;
-    }
-
 }
