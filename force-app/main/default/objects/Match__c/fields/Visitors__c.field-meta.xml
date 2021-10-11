@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Visitors__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Visitor team</description>
+    <externalId>false</externalId>
+    <label>Visitor</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Team must have 11 active players</errorMessage>
+        <filterItems>
+            <field>Team__c.Total_Active_Players__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>11</value>
+        </filterItems>
+        <infoMessage>Team must have 11 active players</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Team__c</referenceTo>
+    <relationshipLabel>Match (Visitor)</relationshipLabel>
+    <relationshipName>Match1</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

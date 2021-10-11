@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Team_asiggned_rule_1</fullName>
+    <active>true</active>
+    <description>Team cannot be assigned to the player with blank Email</description>
+    <errorConditionFormula>ISCHANGED( Team__c ) &amp;&amp; ISBLANK(Email__c )</errorConditionFormula>
+    <errorDisplayField>Email__c</errorDisplayField>
+    <errorMessage>Team cannot be assigned to the player with blank Email</errorMessage>
+</ValidationRule>

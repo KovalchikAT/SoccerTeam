@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Winner__c</fullName>
+    <description>Represents Name of winner team or &apos;Draw&apos; if score is equal</description>
+    <externalId>false</externalId>
+    <formula>IF( VALUE(LEFT( Score__c ,FIND(&apos;:&apos;,Score__c )-1))&gt;VALUE(RIGHT( Score__c ,FIND(&apos;:&apos;,Score__c )-1)),  Home_Team__r.Name ,  IF( VALUE(LEFT( Score__c ,FIND(&apos;:&apos;,Score__c )-1))&lt;VALUE(RIGHT( Score__c ,LEN(Score__c)-FIND(&apos;:&apos;,Score__c))),  Visitors__r.Name , &apos;Draw&apos;) )</formula>
+    <inlineHelpText>Represents Name of winner team or &apos;Draw&apos; if score is equal</inlineHelpText>
+    <label>Winner</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

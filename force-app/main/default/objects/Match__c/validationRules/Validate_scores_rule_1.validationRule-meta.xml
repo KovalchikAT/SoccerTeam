@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_scores_rule_1</fullName>
+    <active>true</active>
+    <description>Validate scores in Score__c cannot be negative numbers (even though represented as a string)</description>
+    <errorConditionFormula>VALUE(LEFT( Score__c ,FIND(&apos;:&apos;,Score__c )-1))&lt;0 ||  VALUE(RIGHT( Score__c ,LEN(Score__c)-FIND(&apos;:&apos;,Score__c)))&lt;0</errorConditionFormula>
+    <errorDisplayField>Score__c</errorDisplayField>
+    <errorMessage>Score can&apos;t be negative</errorMessage>
+</ValidationRule>

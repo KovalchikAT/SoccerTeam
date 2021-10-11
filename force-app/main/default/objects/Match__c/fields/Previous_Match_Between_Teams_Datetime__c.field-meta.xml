@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Previous_Match_Between_Teams_Datetime__c</fullName>
+    <description>Represents the date and time of the previous match between those teams.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Represents the date and time of the previous match between those teams.</inlineHelpText>
+    <label>Previous Match Between Teams Datetime</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>
