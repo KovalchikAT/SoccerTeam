@@ -4,7 +4,7 @@ public with sharing class PlayerServices {
         List<Player__c> inactivePlayerList = new List<Player__c>();
         
         for (Player__c tmp : playersList) {
-            if (tmp.isActive) {
+            if (tmp.isActive__c) {
                 activePlayerList.add(tmp);
             } else {
                 inactivePlayerList.add(tmp);
