@@ -49,8 +49,28 @@ public with sharing class SoccerDAO {
         return average/playerCount;
      }
     public static Team__c getTeamWithMostScores(){
-
-        return null;
+        List<Team__c> teamList = new List<Team__c>([SELECT id FROM Team__c]);
+        List<Match__c> matchList = new List<Match__c>([SELECT id, score__c, Home_Team__c, Visitors__c FROM Match__c]);
+        Integer score=0, max=0;
+        Team__c retTeam;
+        for (Team__c tmpTeam : teamList) {
+            score=0;
+            for (Match__c tmpMatch: matchList){
+                Integer a = Integer.valueOf(tmpMatch.score__c.substringBefore(':'));
+                Integer b = Integer.valueOf(tmpMatch.score__c.substringAfter(':'));
+                if((a>b && tmpMatch.Home_Team__c==tmpTeam.id)||(a<b && tmpMatch.Visitors__c==tmpTeam.id)){
+                    score=score+2;
+                }
+                if(a==b && (tmpMatch.Home_Team__c==tmpTeam.id || tmpMatch.Visitors__c==tmpTeam.id)){
+                    score=score+1;
+                }
+            }
+            if (max<score) {
+                max=score;
+                retTeam=tmpTeam;
+            }
+        }
+        return retTeam;
     } 
     public static Map<Id, Integer> getTeamWins(List<Match__c> matchList){
         List<Team__c> teamList = new List<Team__c>([SELECT id FROM Team__c]);
