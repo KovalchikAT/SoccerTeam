@@ -14,6 +14,8 @@ public with sharing class PlayerServices {
         Map<String, List<Player__c>> retMap = new Map<String, List<Player__c>>();
         retMap.put('active',activePlayerList);
         retMap.put('inactive',inactivePlayerList);
+        system.debug(System.LoggingLevel.DEBUG, retMap);
         return retMap;
     }
 }
+//PlayerServices.groupActiveByStatus([SELECT id, isActive__c, Name FROM Player__c]);
