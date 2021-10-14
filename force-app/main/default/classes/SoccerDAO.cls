@@ -1,11 +1,11 @@
 public with sharing class SoccerDAO {
-    public List<Team__c> getTeamsByIds(set<Id> teamIds) {
+    public static List<Team__c> getTeamsByIds(set<Id> teamIds) {
         return new List<Team__c>([SELECT id, Name, Total_Wins__c, Total_Active_Players__c, Played_Home_Matches_Count__c FROM Team__c WHERE id =: teamIds]);
     }
-    public List<Player__c> getActivePlayers(Integer limitNumber, Integer offsetNumber){
+    public static List<Player__c> getActivePlayers(Integer limitNumber, Integer offsetNumber){
         return new List<Player__c>([SELECT id, Name, Email__c, IsActive__c, Team__c FROM Player__c WHERE IsActive__c=true ORDER BY Name LIMIT: limitNumber OFFSET: offsetNumber]);
     }  
-    public Team__c getMostWinnerTeam(){
+    public static Team__c getMostWinnerTeam(){
         Map<id, Integer> teamWinsMap = getTeamWins([SELECT id, score__c, Home_Team__c, Visitors__c FROM Match__c]);
         integer max =0;
         id tmpId;
@@ -15,9 +15,10 @@ public with sharing class SoccerDAO {
                tmpId = tmp;
             }
         }
-        return new Team__c([SELECT id, Name, Total_Wins__c, Total_Active_Players__c, Played_Home_Matches_Count__c FROM Team__c WHERE id =: tmpId LIMIT 1]);
+        List<Team__c> teamList = new List<Team__c>([SELECT id, Name, Total_Wins__c, Total_Active_Players__c, Played_Home_Matches_Count__c FROM Team__c WHERE id =: tmpId LIMIT 1]);
+        return teamList.get(0);
     }
-    public Integer getWonMatchesCountByTeamId(Id teamId){
+    public static Integer getWonMatchesCountByTeamId(Id teamId){
         Map<id, Integer> teamWinsMap = getTeamWins([SELECT id, score__c, Home_Team__c, Visitors__c FROM Match__c]);
         if (teamWinsMap.containsKey(teamId)){
             return teamWinsMap.get(teamId);
@@ -25,19 +26,33 @@ public with sharing class SoccerDAO {
             return 0;
         }
     }   
-    public Map<Id, Integer> getTeamsWithPlayerNumber(Set<Id> teamIds){
-
-        return null;
+    public static Map<Id, Integer> getTeamsWithPlayerNumber(Set<Id> teamIds){
+        Map<Id,Integer> teamActivePlayersCount = new Map<Id,Integer>();
+        if (teamIds.isEmpty()){
+            for (Team__c tmp : new List<Team__c>([SELECT id FROM Team__c])){
+                teamIds.add(tmp.id);
+            }
+        }
+        for (id tmp : teamIds) {
+            AggregateResult[] tmpRes = [select count(id) countID from player__c where isActive__c=true and team__c=:tmp];
+          teamActivePlayersCount.put(tmp, (integer)tmpRes.get(0).get('countID'));             
+        }
+        return teamActivePlayersCount;
     }
-    public Integer getTeamStatistics(Set<Id> teamIds){
-
-        return null;
+    public static Integer getTeamStatistics(Set<Id> teamIds){
+        Map<Id, Integer> teamWithPlayer = getTeamsWithPlayerNumber(teamIds);
+        Integer playerCount=0 , average=0;
+        for (id tmp : teamWithPlayer.keySet()) {
+            average=average+teamWithPlayer.get(tmp);   
+            playerCount++;          
+        }
+        return average/playerCount;
      }
-    public Team__c getTeamWithMostScores(){
+    public static Team__c getTeamWithMostScores(){
 
         return null;
     } 
-    public Map<Id, Integer> getTeamWins(List<Match__c> matchList){
+    public static Map<Id, Integer> getTeamWins(List<Match__c> matchList){
         List<Team__c> teamList = new List<Team__c>([SELECT id FROM Team__c]);
         Map<id, Integer> teamWinsMap = new Map<id, Integer>();
         for (Team__c tmp : teamList) {teamWinsMap.put(tmp.id, 0);}
