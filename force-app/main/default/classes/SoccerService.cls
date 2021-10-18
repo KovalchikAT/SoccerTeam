@@ -1,11 +1,31 @@
 public with sharing class SoccerService {
+    class ScoreHelper{
+        ScoreHelper(id tmpId, Integer tmpHomeTeamScore, Integer tmpVisitorsTeamScore){
+            matchId=tmpId;
+            homeTeamScore=tmpHomeTeamScore;
+            visitorsTeamScore=tmpVisitorsTeamScore;
+        }
+        Id matchId;
+        Integer homeTeamScore;
+        Integer visitorsTeamScore;
+       }
    
     public static void createPlayer(String name, String email, Map<SObjectField, Object> extraValues){
         Player__c retPlayer= new Player__c();
         retPlayer.Name=name;
         retPlayer.Email__c=email;
-        retPlayer.Team__c=extraValues.get('Team__c');
-        retPlayer.IsActive__c=extraValues.get('IsActive__c');
+        /*        retPlayer.Team__c=extraValues.get(Schema.SObjectField.Team__c);
+        for (SObjectField tmp : extraValues) {
+            if(tmp.getDescribe()==Schema.sObjectType.Player__c.fields.IsActive__c)
+            {
+                retPlayer.IsActive__c= extraValues.get(tmp);
+            }
+            if(tmp.getDescribe()==Schema.sObjectType.Player__c.fields.Team__c)
+            {
+                retPlayer.Team__c= extraValues.get(tmp);
+            }
+        }
+        retPlayer.IsActive__c=extraValues.get(Schema.SObjectField.IsActive__c);*/
         try {
             insert retPlayer;
         } catch (DmlException e) {
@@ -25,11 +45,11 @@ public with sharing class SoccerService {
         }
     }
     public static void setScoreToMatches(List<ScoreHelper> scores){
-        List<Match__c> retMatch= new List<Match__c>([SELECT id, Name, Start_DateTime__c, Home_Team__c, 
-                                                            Visitors__c, Days_Left__c, Previous_Match_Between_Teams_Datetime__c, 
-                                                            Score__c, Winner__c FROM Match__c WHERE id =: scores.matchId]);
+        List<Match__c> retMatch= new List<Match__c>();
         for (ScoreHelper tmp : scores) {
-            retMatch.get(retMatch.indexOf(tmp.matchId)).Score__c=tmp.homeTeamScore+':'+tmp.visitorsTeamScore;
+            List<Match__c> tmpList=new List<Match__c>([SELECT id, Name, Start_DateTime__c, Home_Team__c, Visitors__c, Days_Left__c, Previous_Match_Between_Teams_Datetime__c, Score__c, Winner__c FROM Match__c WHERE id =: tmp.matchId]);
+            tmpList.get(0).Score__c=tmp.homeTeamScore+':'+tmp.visitorsTeamScore;
+            retMatch.add(tmpList.get(0));
         }
         try {
             upsert retMatch;
@@ -48,14 +68,5 @@ public with sharing class SoccerService {
             System.debug('A DML upsert exception has occurred: ' + e.getMessage());
         }
     }
-    class ScoreHelper{
-        ScoreHelper(id tmpId, Integer tmpHomeTeamScore, Integer tmpVisitorsTeamScore){
-            matchId=tmpId;
-            homeTeamScore=tmpHomeTeamScore;
-            visitorsTeamScore=tmpVisitorsTeamScore;
-        }
-        Id matchId;
-        Integer homeTeamScore;
-        Integer visitorsTeamScore;
-       }
+    
 }
