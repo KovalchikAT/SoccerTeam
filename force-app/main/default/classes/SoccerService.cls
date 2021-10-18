@@ -1,4 +1,5 @@
 public with sharing class SoccerService {
+   
     class ScoreHelper{
         ScoreHelper(id tmpId, Integer tmpHomeTeamScore, Integer tmpVisitorsTeamScore){
             matchId=tmpId;
