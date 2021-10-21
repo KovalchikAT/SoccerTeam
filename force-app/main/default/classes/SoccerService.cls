@@ -15,6 +15,7 @@ public with sharing class SoccerService {
         Player__c retPlayer= new Player__c();
         retPlayer.Name=name;
         retPlayer.Email__c=email;
+
         /*        retPlayer.Team__c=extraValues.get(Schema.SObjectField.Team__c);
         for (SObjectField tmp : extraValues) {
             if(tmp.getDescribe()==Schema.sObjectType.Player__c.fields.IsActive__c)
@@ -48,7 +49,8 @@ public with sharing class SoccerService {
     public static void setScoreToMatches(List<ScoreHelper> scores){
         List<Match__c> retMatch= new List<Match__c>();
         for (ScoreHelper tmp : scores) {
-            List<Match__c> tmpList=new List<Match__c>([SELECT id, Name, Start_DateTime__c, Home_Team__c, Visitors__c, Days_Left__c, Previous_Match_Between_Teams_Datetime__c, Score__c, Winner__c FROM Match__c WHERE id =: tmp.matchId]);
+            List<Match__c> tmpList=new List<Match__c>([SELECT id, Name, Start_DateTime__c, Home_Team__c, Visitors__c, Days_Left__c, 
+                                                            Previous_Match_Between_Teams_Datetime__c, Score__c, Winner__c FROM Match__c WHERE id =: tmp.matchId]);
             tmpList.get(0).Score__c=tmp.homeTeamScore+':'+tmp.visitorsTeamScore;
             retMatch.add(tmpList.get(0));
         }
