@@ -33,11 +33,9 @@ public with sharing class SoccerDAO {
                 teamIds.add(tmp.id);
             }
         }
-        AggregateResult[] aggrResalt = [select count(id) countID, team__c from player__c where isActive__c=true and team__c=:tmp GROUP BY team__c];
-        teamActivePlayersCount.put((Id)(integer)aggrResalt.get('team__c'), (integer)aggrResalt.get('countID'));  
-       /* for (AggregateResult tmp: aggrResalt){
-            teamActivePlayersCount.put((Id)tmp.get('team__c'), (integer)tmp.get('countID'));
-       } */  
+        for (AggregateResult tmpAggrResalt :  [select count(id) countID, team__c from player__c where isActive__c=true and team__c=:teamIds GROUP BY team__c]) {
+            teamActivePlayersCount.put((Id)tmpAggrResalt.get('team__c'), (integer)tmpAggrResalt.get('countID'));        
+        }
         return teamActivePlayersCount;
     }
     public static Integer getTeamStatistics(Set<Id> teamIds){
@@ -74,9 +72,9 @@ public with sharing class SoccerDAO {
         return retTeam;
     } 
     public static Map<Id, Integer> getTeamWins(List<Match__c> matchList){
-        List<Team__c> teamList = new List<Team__c>([SELECT id FROM Team__c]);
+        List<Team__c> teamList = new List<Team__c>([SELECT id, Total_Wins__c FROM Team__c]);
         Map<id, Integer> teamWinsMap = new Map<id, Integer>();
-        for (Team__c tmp : teamList) {teamWinsMap.put(tmp.id, 0);}
+        for (Team__c tmp : teamList) {teamWinsMap.put(tmp.id, (Integer)tmp.Total_Wins__c);}
         for (Match__c tmp: matchList){
             Integer a = Integer.valueOf(tmp.score__c.substringBefore(':'));
             Integer b = Integer.valueOf(tmp.score__c.substringAfter(':'));
@@ -112,6 +110,6 @@ public with sharing class SoccerDAO {
         }
         return tmpList.get(index).Start_DateTime__c;
         }
-        return Datetime.now();
+        return null;
     }
 }
