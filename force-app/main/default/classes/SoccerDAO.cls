@@ -72,10 +72,12 @@ public with sharing class SoccerDAO {
         return retTeam;
     } 
     public static Map<Id, Integer> getTeamWins(List<Match__c> matchList){
-        List<Team__c> teamList = new List<Team__c>([SELECT id, Total_Wins__c FROM Team__c]);
+        
         Map<id, Integer> teamWinsMap = new Map<id, Integer>();
-        for (Team__c tmp : teamList) {teamWinsMap.put(tmp.id, (Integer)tmp.Total_Wins__c);}
         for (Match__c tmp: matchList){
+            if (!teamWinsMap.containsKey(tmp.Home_Team__c))  {    teamWinsMap.put(tmp.Home_Team__c,0);}
+            if (!teamWinsMap.containsKey(tmp.Visitors__c))   {    teamWinsMap.put(tmp.Visitors__c,0);}
+
             Integer a = Integer.valueOf(tmp.score__c.substringBefore(':'));
             Integer b = Integer.valueOf(tmp.score__c.substringAfter(':'));
             if(a>b){
