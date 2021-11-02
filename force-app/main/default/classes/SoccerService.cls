@@ -1,6 +1,7 @@
 public with sharing class SoccerService {
+   
     class ScoreHelper{
-        ScoreHelper(id tmpId, Integer tmpHomeTeamScore, Integer tmpVisitorsTeamScore){
+        public ScoreHelper(id tmpId, Integer tmpHomeTeamScore, Integer tmpVisitorsTeamScore){
             matchId=tmpId;
             homeTeamScore=tmpHomeTeamScore;
             visitorsTeamScore=tmpVisitorsTeamScore;
@@ -14,20 +15,13 @@ public with sharing class SoccerService {
         Player__c retPlayer= new Player__c();
         retPlayer.Name=name;
         retPlayer.Email__c=email;
-        /*        retPlayer.Team__c=extraValues.get(Schema.SObjectField.Team__c);
-        for (SObjectField tmp : extraValues) {
-            if(tmp.getDescribe()==Schema.sObjectType.Player__c.fields.IsActive__c)
-            {
-                retPlayer.IsActive__c= extraValues.get(tmp);
-            }
-            if(tmp.getDescribe()==Schema.sObjectType.Player__c.fields.Team__c)
-            {
-                retPlayer.Team__c= extraValues.get(tmp);
+        for (SObjectField tmp : extraValues.keySet()) {
+            if(tmp==Schema.sObjectType.Player__c.fields.getMap().get('IsActive__c')){
+                retPlayer.IsActive__c=(Boolean)extraValues.get(tmp);
             }
         }
-        retPlayer.IsActive__c=extraValues.get(Schema.SObjectField.IsActive__c);*/
         try {
-            insert retPlayer;
+            upsert retPlayer;
         } catch (DmlException e) {
             System.debug('A DML insert exception has occurred: ' + e.getMessage());
         }
@@ -47,9 +41,7 @@ public with sharing class SoccerService {
     public static void setScoreToMatches(List<ScoreHelper> scores){
         List<Match__c> retMatch= new List<Match__c>();
         for (ScoreHelper tmp : scores) {
-            List<Match__c> tmpList=new List<Match__c>([SELECT id, Name, Start_DateTime__c, Home_Team__c, Visitors__c, Days_Left__c, Previous_Match_Between_Teams_Datetime__c, Score__c, Winner__c FROM Match__c WHERE id =: tmp.matchId]);
-            tmpList.get(0).Score__c=tmp.homeTeamScore+':'+tmp.visitorsTeamScore;
-            retMatch.add(tmpList.get(0));
+            retMatch.add(new Match__c(id=tmp.matchId, Score__c=tmp.homeTeamScore+':'+tmp.visitorsTeamScore));
         }
         try {
             upsert retMatch;
@@ -58,9 +50,10 @@ public with sharing class SoccerService {
         }
     }
     public static void deactivatePlayers(List<Id> playersIds){
-        List<Player__c> retPlayer = new List<Player__c>([SELECT id, Name, Email__c, Team__c, IsActive__c FROM Player__c WHERE id =: playersIds]);
-        for (Player__c tmp : retPlayer) {
-            tmp.IsActive__c=False;
+        List<Player__c> retPlayer = new List<Player__c>();
+        for (id tmp : playersIds) {
+            Player__c tmpPlayer= new Player__c(Id=tmp, isActive__c=False);
+            retPlayer.add(tmpPlayer);
         }
         try {
             upsert retPlayer;
