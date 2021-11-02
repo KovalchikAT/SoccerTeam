@@ -1,0 +1,19 @@
+<aura:component controller="SoccerTeamStatisticsTableController" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="teams" type="Team__c[]"/>
+    <aura:attribute name="limitNumber" type="Integer" default="3"/>
+    <aura:attribute name="columns" type="List"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.initTable}" />
+    <aura:handler name="change" value="{!v.limitNumber}" action="{!c.reloadTable}" />
+    
+    <div class="slds-box slds-theme_default">
+    	<lightning:layout>
+            <lightning:layoutItem padding="around-small" size="10">
+                <lightning:datatable keyField="id" data="{!v.teams}" columns="{!v.columns}" hideCheckboxColumn="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="1">
+                <ui:inputNumber label="Top teams" value="{!v.limitNumber}" updateOn="keyup"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>
