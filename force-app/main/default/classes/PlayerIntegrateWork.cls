@@ -8,12 +8,12 @@ global with sharing class PlayerIntegrateWork {
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endPoint+'/'+playerId);
         req.setMethod('DELETE');
-
+        HttpResponse resp;
         try {
-            HttpResponse resp = http.send(req);
+            resp = http.send(req);
 
             System.debug(resp.toString());
-            System.debug('Status Code'+reps.getStatusCode());
+            System.debug('Status Code'+resp.getStatusCode());
         } catch (System.CalloutException e) {
             System.debug('A HTTP callout exception has occurred: ' + e.getMessage());
         }
