@@ -1,5 +1,5 @@
 @IsTest
-public with sharing class SchedulerTest {
+public with sharing class PlayerServicesTest {
     @testSetup static void setup() {
         // Create common test Teams
         List<Team__c> testTeam = new List<Team__c>();
@@ -36,11 +36,29 @@ public with sharing class SchedulerTest {
         system.debug(System.LoggingLevel.DEBUG, testPlayer);
         system.debug(System.LoggingLevel.DEBUG, testMatch);            
     }/* */
-    @IsTest public static void testScheduler(){
-        String cronStr = '0 * * * *';
-        Test.startTest();
-        Scheduler.schedulerStart();
-        Test.stopTest();
-    }
 
+    @isTest 
+    public static void groupActiveByStatusTest(){
+        List<Player__c> playersList =[SELECT id, isActive__c, Name FROM Player__c];
+        List<Player__c> activePlayerList = new List<Player__c>();
+        List<Player__c> inactivePlayerList = new List<Player__c>();
+        playersList.get(0).isActive__c=false;
+        for (Player__c tmp : playersList) {
+            if (tmp.isActive__c) {
+                activePlayerList.add(tmp);
+            } else {
+                inactivePlayerList.add(tmp);
+            }
+        }
+        
+        map<String, List<Player__c>> retMap = new Map<String, List<Player__c>>();
+        retMap.put('active',activePlayerList);
+        retMap.put('inactive',inactivePlayerList);
+
+        Test.startTest();
+        map<String, List<Player__c>> tmp= PlayerServices.groupActiveByStatus(playersList);
+        Test.stopTest();
+
+        System.assertEquals(retMap, tmp, 'groupActiveByStatus valid');
+    } 
 }

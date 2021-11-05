@@ -1,5 +1,5 @@
 @IsTest
-public with sharing class SchedulerTest {
+public with sharing class PlayerIntegrateWorkTest {
     @testSetup static void setup() {
         // Create common test Teams
         List<Team__c> testTeam = new List<Team__c>();
@@ -36,11 +36,4 @@ public with sharing class SchedulerTest {
         system.debug(System.LoggingLevel.DEBUG, testPlayer);
         system.debug(System.LoggingLevel.DEBUG, testMatch);            
     }/* */
-    @IsTest public static void testScheduler(){
-        String cronStr = '0 * * * *';
-        Test.startTest();
-        Scheduler.schedulerStart();
-        Test.stopTest();
-    }
-
 }
